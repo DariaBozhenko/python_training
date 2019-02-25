@@ -2,7 +2,6 @@ from model.contact import Contact
 
 
 def test_modify_contact(app):
-    app.session.login("admin", "secret")
     app.contact.modify_first_contact(
         Contact(firstname="edited", middlename="edited", lastname="edited", username="edited",
                 title="edited", company="edited", address="editedAddress,105/10",
@@ -11,11 +10,9 @@ def test_modify_contact(app):
                 email3="editeddb3@example.com", homepage="editedtest.db.com", birthday="28",
                 birthmonth="April", birthyear="1987", aday="13", amonth="August", ayear="1999",
                 address2="editedSecond Adress, 35/9", phone2="+00000000", notes="edited Testing notest"))
-    app.session.logout()
 
 
 def test_modify_contact_from_details_page(app):
-    app.session.login("admin", "secret")
     app.contact.modify_from_details_page(
         Contact(firstname="edited from details", middlename="edited from details", lastname="edited from details",
                 username="edited from details",
@@ -26,4 +23,3 @@ def test_modify_contact_from_details_page(app):
                 birthmonth="May", birthyear="1977", aday="26", amonth="February", ayear="2010",
                 address2="edited from detailsSecond Adress, 35/9", phone2="+00000000",
                 notes="edited from details Testing notest"))
-    app.session.logout()
