@@ -17,7 +17,7 @@ class ContactHelper:
 
     def delete_first_contact(self):
         wd = self.app.wd
-        wd.find_element_by_link_text("home").click()
+        self.open_contact_page()
         # pick the first record in the list
         wd.find_element_by_name("selected[]").click()
         # click Delete button
@@ -25,11 +25,11 @@ class ContactHelper:
         # confirm deletion
         wd.switch_to_alert().accept()
         # return to home page
-        wd.find_element_by_link_text("home").click()
+        self.open_contact_page()
 
     def modify_first_contact(self, contact):
         wd = self.app.wd
-        wd.find_element_by_link_text("home").click()
+        self.open_contact_page()
         # pick the first record in the list
         wd.find_element_by_xpath('//*[@title="Edit"]').click()
         # fill in the form with new data
@@ -40,7 +40,7 @@ class ContactHelper:
 
     def modify_from_details_page(self, contact):
         wd = self.app.wd
-        wd.find_element_by_link_text("home").click()
+        self.open_contact_page()
         # open details fo the first contact in the list
         wd.find_element_by_xpath('//*[@title="Details"]').click()
         # click modify button
@@ -53,12 +53,18 @@ class ContactHelper:
 
     def delete_contact_from_modify_page(self):
         wd = self.app.wd
-        wd.find_element_by_link_text("home").click()
+        self.open_contact_page()
         # pick the first record in the list
         wd.find_element_by_xpath('//*[@title="Edit"]').click()
         # click delete button
         wd.find_element_by_xpath('//*[@value="Delete"]').click()
-        wd.find_element_by_link_text("home").click()
+        self.open_contact_page()
+
+    def open_contact_page(self):
+        wd = self.app.wd
+        if not (
+            wd.current_url.endswith("/index.php") and len(wd.find_elements_by_xpath('//*[@value="Send e-Mail"]')) > 0):
+            wd.find_element_by_link_text("home").click()
 
     def fill_contact_form(self, contact):
         wd = self.app.wd
@@ -138,5 +144,5 @@ class ContactHelper:
 
     def count(self):
         wd = self.app.wd
-        wd.find_element_by_link_text("home").click()
+        self.open_contact_page()
         return len(wd.find_elements_by_name("selected[]"))
