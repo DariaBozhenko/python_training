@@ -9,9 +9,12 @@ def test_delete_contact(app):
                                    email3="db3@example.com", homepage="test.db.com", birthday="4",
                                    birthmonth="July", birthyear="1989", aday="26", amonth="November", ayear="2000",
                                    address2="Second Adress, 35/9", phone2="+924050485498", notes="Testing notest"))
-
+    old_contacts = app.contact.get_contact_list()
     app.contact.delete_first_contact()
-
+    new_contacts = app.contact.get_contact_list()
+    assert len(old_contacts) - 1 == len(new_contacts)
+    old_contacts[0:1] = []
+    assert old_contacts == new_contacts
 
 def test_delete_contact_from_modify_page(app):
     if app.contact.count() == 0:
@@ -22,5 +25,9 @@ def test_delete_contact_from_modify_page(app):
                                    email3="db3@example.com", homepage="test.db.com", birthday="4",
                                    birthmonth="July", birthyear="1989", aday="26", amonth="November", ayear="2000",
                                    address2="Second Adress, 35/9", phone2="+924050485498", notes="Testing notest"))
-
+    old_contacts = app.contact.get_contact_list()
     app.contact.delete_contact_from_modify_page()
+    new_contacts = app.contact.get_contact_list()
+    assert len(old_contacts) - 1 == len(new_contacts)
+    old_contacts[0:1] = []
+    assert old_contacts == new_contacts
