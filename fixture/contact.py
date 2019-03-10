@@ -18,10 +18,13 @@ class ContactHelper:
         self.contact_cache = None
 
     def delete_first_contact(self):
+        self.delete_contact_by_index(0)
+
+    def delete_contact_by_index(self, index):
         wd = self.app.wd
         self.open_contact_page()
         # pick the first record in the list
-        wd.find_element_by_name("selected[]").click()
+        wd.find_elements_by_name("selected[]")[index].click()
         # click Delete button
         wd.find_element_by_xpath('//*[@value="Delete"]').click()
         # confirm deletion
@@ -30,11 +33,14 @@ class ContactHelper:
         time.sleep(3)
         self.contact_cache = None
 
-    def modify_first_contact(self, contact):
+    def modify_first_contact(self):
+        self.modify_contact_by_index(0)
+
+    def modify_contact_by_index(self, index, contact):
         wd = self.app.wd
         self.open_contact_page()
         # pick the first record in the list
-        wd.find_element_by_xpath('//*[@title="Edit"]').click()
+        wd.find_elements_by_xpath('//*[@title="Edit"]')[index].click()
         # fill in the form with new data
         self.fill_contact_form(contact)
         # click update button
@@ -42,11 +48,11 @@ class ContactHelper:
         self.return_to_home_page()
         self.contact_cache = None
 
-    def modify_from_details_page(self, contact):
+    def modify_from_details_page(self, index, contact):
         wd = self.app.wd
         self.open_contact_page()
         # open details fo the first contact in the list
-        wd.find_element_by_xpath('//*[@title="Details"]').click()
+        wd.find_elements_by_xpath('//*[@title="Details"]')[index].click()
         # click modify button
         wd.find_element_by_name("modifiy").click()
         # fill in the form with new data
@@ -56,11 +62,11 @@ class ContactHelper:
         self.return_to_home_page()
         self.contact_cache = None
 
-    def delete_contact_from_modify_page(self):
+    def delete_contact_from_modify_page(self, index):
         wd = self.app.wd
         self.open_contact_page()
         # pick the first record in the list
-        wd.find_element_by_xpath('//*[@title="Edit"]').click()
+        wd.find_elements_by_xpath('//*[@title="Edit"]')[index].click()
         # click delete button
         wd.find_element_by_xpath('//*[@value="Delete"]').click()
         self.open_contact_page()
