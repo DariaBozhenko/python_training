@@ -147,10 +147,9 @@ class ContactHelper:
                 first = column[2].text
                 last = column[1].text
                 id = element.find_element_by_name("selected[]").get_attribute("value")
-                all_phones = column[5].text.splitlines()
+                all_phones = column[5].text
                 self.contact_cache.append(
-                    Contact(firstname=first, lastname=last, id=id, homephone=all_phones[0], mobilephone=all_phones[1],
-                            workphone=all_phones[2], phone2=all_phones[3]))
+                    Contact(firstname=first, lastname=last, id=id, all_phones_from_home_page=all_phones))
         return list(self.contact_cache)
 
     def get_contact_from_details_page(self, index):
