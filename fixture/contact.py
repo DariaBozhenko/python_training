@@ -1,6 +1,7 @@
 from selenium.webdriver.support.ui import Select
 from model.contact import Contact
 import time
+import re
 
 class ContactHelper:
     def __init__(self, app):
@@ -38,9 +39,7 @@ class ContactHelper:
 
     def modify_contact_by_index(self, index, contact):
         wd = self.app.wd
-        self.open_contact_page()
-        # pick the first record in the list
-        wd.find_elements_by_xpath('//*[@title="Edit"]')[index].click()
+        self.open_edit_page(index)
         # fill in the form with new data
         self.fill_contact_form(contact)
         # click update button
@@ -48,11 +47,16 @@ class ContactHelper:
         self.return_to_home_page()
         self.contact_cache = None
 
-    def modify_from_details_page(self, index, contact):
+    def open_details_page(self, index):
         wd = self.app.wd
         self.open_contact_page()
-        # open details fo the first contact in the list
         wd.find_elements_by_xpath('//*[@title="Details"]')[index].click()
+
+
+    def modify_from_details_page(self, index, contact):
+        wd = self.app.wd
+        # open details for random contact in the list
+        self.open_details_page(index)
         # click modify button
         wd.find_element_by_name("modifiy").click()
         # fill in the form with new data
@@ -64,13 +68,17 @@ class ContactHelper:
 
     def delete_contact_from_modify_page(self, index):
         wd = self.app.wd
-        self.open_contact_page()
-        # pick the first record in the list
-        wd.find_elements_by_xpath('//*[@title="Edit"]')[index].click()
+        self.open_edit_page(index)
         # click delete button
         wd.find_element_by_xpath('//*[@value="Delete"]').click()
         self.open_contact_page()
         self.contact_cache = None
+
+    def open_edit_page(self, index):
+        wd = self.app.wd
+        self.open_contact_page()
+        # pick any record in the list
+        wd.find_elements_by_xpath('//*[@title="Edit"]')[index].click()
 
     def open_contact_page(self):
         wd = self.app.wd
@@ -139,5 +147,31 @@ class ContactHelper:
                 first = column[2].text
                 last = column[1].text
                 id = element.find_element_by_name("selected[]").get_attribute("value")
-                self.contact_cache.append(Contact(firstname=first, lastname=last, id=id))
+                all_phones = column[5].text.splitlines()
+                self.contact_cache.append(
+                    Contact(firstname=first, lastname=last, id=id, homephone=all_phones[0], mobilephone=all_phones[1],
+                            workphone=all_phones[2], phone2=all_phones[3]))
         return list(self.contact_cache)
+
+    def get_contact_from_details_page(self, index):
+        wd = self.app.wd
+        self.open_details_page(index)
+        text = wd.find_element_by_id("content").text
+        homephone = re.search("H: (.*)", text).group(1)
+        workhone = re.search("W: (.*)", text).group(1)
+        mobilephone = re.search("M: (.*)", text).group(1)
+        phone2 = re.search("P: (.*)", text).group(1)
+        return Contact(homephone=homephone, workphone=workhone, mobilephone=mobilephone, phone2=phone2)
+
+    def get_contact_info_from_edit_page(self, index):
+        wd = self.app.wd
+        self.open_edit_page(index)
+        firstname = wd.find_element_by_name("firstname").get_attribute("value")
+        lastname = wd.find_element_by_name("lastname").get_attribute("value")
+        id = wd.find_element_by_name("id").get_attribute("value")
+        homephone = wd.find_element_by_name("home").get_attribute("value")
+        workphone = wd.find_element_by_name("work").get_attribute("value")
+        mobilephone = wd.find_element_by_name("mobile").get_attribute("value")
+        phone2 = wd.find_element_by_name("phone2").get_attribute("value")
+        return Contact(firstname=firstname, lastname=lastname, id=id, homephone=homephone, mobilephone=mobilephone,
+                       workphone=workphone, phone2=phone2)
