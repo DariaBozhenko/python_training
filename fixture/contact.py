@@ -85,7 +85,6 @@ class ContactHelper:
         if not (
             wd.current_url.endswith("/index.php") and len(wd.find_elements_by_xpath('//*[@value="Send e-Mail"]')) > 0):
             wd.find_element_by_link_text("home").click()
-            wd.find_element_by_link_text("Last name")
 
     def change_field_value(self, field_name, text):
         wd = self.app.wd
