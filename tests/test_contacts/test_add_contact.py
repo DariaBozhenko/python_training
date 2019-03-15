@@ -42,7 +42,7 @@ def random_year():
 
 
 def random_website():
-    website = StringGenerator('[\a\p\s]{0:20}').render()
+    website = StringGenerator('[\l]{0:20}&[\d\p\s]{0:10}').render()
     return website
 
 
