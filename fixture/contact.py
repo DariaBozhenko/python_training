@@ -34,6 +34,19 @@ class ContactHelper:
         wd.find_elements_by_css_selector("div.msgbox")
         self.contact_cache = None
 
+    def delete_contact_by_id(self, id):
+        wd = self.app.wd
+        self.open_contact_page()
+        # pick the first record in the list
+        wd.find_element_by_css_selector("input[id='%s']" % id).click()
+        # click Delete button
+        wd.find_element_by_xpath('//*[@value="Delete"]').click()
+        # confirm deletion
+        wd.switch_to_alert().accept()
+        # return to home page
+        wd.find_elements_by_css_selector("div.msgbox")
+        self.contact_cache = None
+
     def modify_first_contact(self):
         self.modify_contact_by_index(0)
 
@@ -47,16 +60,46 @@ class ContactHelper:
         self.return_to_home_page()
         self.contact_cache = None
 
+    def modify_contact_by_id(self, id, contact):
+        wd = self.app.wd
+        self.open_edit_page_by_id(id)
+        # fill in the form with new data
+        self.fill_contact_form(contact)
+        # click update button
+        wd.find_element_by_xpath('//*[@value="Update"]').click()
+        self.return_to_home_page()
+        self.contact_cache = None
+
+
     def open_details_page(self, index):
         wd = self.app.wd
         self.open_contact_page()
         wd.find_elements_by_xpath('//*[@title="Details"]')[index].click()
+
+    def open_details_page_by_id(self, id):
+        wd = self.app.wd
+        self.open_contact_page()
+        wd.find_element_by_css_selector("a[href='view.php?id=%s']" % id).click()
+
 
 
     def modify_from_details_page(self, index, contact):
         wd = self.app.wd
         # open details for random contact in the list
         self.open_details_page(index)
+        # click modify button
+        wd.find_element_by_name("modifiy").click()
+        # fill in the form with new data
+        self.fill_contact_form(contact)
+        # click update button
+        wd.find_element_by_xpath('//*[@value="Update"]').click()
+        self.return_to_home_page()
+        self.contact_cache = None
+
+    def modify_from_details_page_by_id(self, id, contact):
+        wd = self.app.wd
+        # open details for random contact in the list
+        self.open_details_page_by_id(id)
         # click modify button
         wd.find_element_by_name("modifiy").click()
         # fill in the form with new data
@@ -73,6 +116,20 @@ class ContactHelper:
         wd.find_element_by_xpath('//*[@value="Delete"]').click()
         self.open_contact_page()
         self.contact_cache = None
+
+    def delete_contact_from_modify_page_by_id(self, id):
+        wd = self.app.wd
+        self.open_edit_page_by_id(id)
+        # click delete button
+        wd.find_element_by_xpath('//*[@value="Delete"]').click()
+        self.open_contact_page()
+        self.contact_cache = None
+
+    def open_edit_page_by_id(self, id):
+        wd = self.app.wd
+        self.open_contact_page()
+        # pick any record in the list
+        wd.find_element_by_css_selector("a[href='edit.php?id=%s']" % id).click()
 
     def open_edit_page(self, index):
         wd = self.app.wd

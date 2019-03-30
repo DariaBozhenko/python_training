@@ -12,7 +12,7 @@ def test_modify_group_name(app, db, check_ui):
     new_groups = db.get_group_list()
     old_groups.remove(group)
     old_groups.append(edited_group)
-    assert sorted(old_groups, key=Group.id_or_max) == new_groups
+    assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
     if check_ui:
         def clean(group):
             return Group(id=group.id, name=group.name.strip())
